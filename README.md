@@ -1,4 +1,5 @@
 # LangualProject
+Goal: To connect food databases using LanguaL.
 # Updates
   - 7/7/24: added early tests for jaccard_index method, cleaned up repository
 # Todo
@@ -18,5 +19,7 @@ How do I test the performance of my program? 3 Categories
   - Test 1: 100 fixed food rows. 
   - Test 2: 100 random food rows(done 10 times). 
   - Test 3: [Edge-case testing] pick 30 foods with no langual codes 
+
+USDA data is not being used currently, ignore for now. 
 
 Set max rows as a const variable
