@@ -1,5 +1,10 @@
 # LangualProject
- 
+# Updates
+  - 7/7/24: added early tests for jaccard_index method, cleaned up repository
+# Todo
+  - Refactor main.py to have uniform column values
+    - Process the raw data to make it easier to use, remove null values etc
+## Notes
 Not all of the rows have a 1 to 1 specific entry
 Not all of the rows have a defined langual code (that's where LLMs becomes handy)
 
@@ -13,6 +18,5 @@ How do I test the performance of my program? 3 Categories
   - Test 1: 100 fixed food rows. 
   - Test 2: 100 random food rows(done 10 times). 
   - Test 3: [Edge-case testing] pick 30 foods with no langual codes 
-
 
 Set max rows as a const variable
