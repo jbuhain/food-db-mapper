@@ -1,4 +1,0 @@
-some langal codes are less relevant (ex: K - packing medium M - container or wrapping)
-
-
-some of the frida 2023 data have NULL langual codes. maybe 2008 one is better. 
