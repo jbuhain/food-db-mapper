@@ -69,13 +69,42 @@ def get_highest_similarity_foodnames(df, foodname_column='ENGFDNAM'):
     highest_similarity_rows = df[df['SIMILARITYSCORE'] == max_score]
     return set(highest_similarity_rows[foodname_column])
 
-# %%
 # Main function to calculate similarities
 # Bit messy, refactor this so that the column names are uniform!
 def get_highest_similarity_foodnames(df, foodname_column='ENGFDNAM'):
     max_score = df['SIMILARITYSCORE'].max()
     highest_similarity_rows = df[df['SIMILARITYSCORE'] == max_score]
     return set(highest_similarity_rows[foodname_column])
+
+# %%
+# Function to get row by ENGFDNAM
+def get_row_by_engfdnam(engfdnam_value, origin_db):
+    global df_nevo_langal, df_frida_langal
+    
+    if origin_db == 'nevo':
+        return df_nevo_langal[df_nevo_langal['ENGFDNAM'] == engfdnam_value]
+    elif origin_db == 'frida':
+        return df_frida_langal[df_frida_langal['FoodName'] == engfdnam_value]
+    else:
+        raise ValueError("Invalid origin_db value. Use 'nevo' or 'frida'.")
+
+def get_row_by_foodid(foodid_value, origin_db):
+    global df_nevo_langal, df_frida_langal
+
+    if isinstance(foodid_value, str):
+        try:
+            foodid_value = int(foodid_value)
+        except ValueError:
+            # Handle the case where the string cannot be converted to an integer
+            print("Error: foodid_value must be an integer or a numeric string.")
+            return
+    
+    if origin_db == 'nevo':
+        return df_nevo_langal[df_nevo_langal['FOODID'] == foodid_value]
+    elif origin_db == 'frida':
+        return df_frida_langal[df_frida_langal['FoodID'] == foodid_value]
+    else:
+        raise ValueError("Invalid origin_db value. Use 'nevo' or 'frida'.")
 
 # %%
 # Main function to calculate similarities
@@ -148,38 +177,6 @@ def calculate_similarity(food_name, origin_db, target_db):
     del temp_target_df
     return highest_similarity_foodnames
     
-
-# %%
-# Function to get row by ENGFDNAM
-def get_row_by_engfdnam(engfdnam_value, origin_db):
-    global df_nevo_langal, df_frida_langal
-    
-    if origin_db == 'nevo':
-        return df_nevo_langal[df_nevo_langal['ENGFDNAM'] == engfdnam_value]
-    elif origin_db == 'frida':
-        return df_frida_langal[df_frida_langal['FoodName'] == engfdnam_value]
-    else:
-        raise ValueError("Invalid origin_db value. Use 'nevo' or 'frida'.")
-
-def get_row_by_foodid(foodid_value, origin_db):
-    global df_nevo_langal, df_frida_langal
-
-    if isinstance(foodid_value, str):
-        try:
-            foodid_value = int(foodid_value)
-        except ValueError:
-            # Handle the case where the string cannot be converted to an integer
-            print("Error: foodid_value must be an integer or a numeric string.")
-            return
-    
-    if origin_db == 'nevo':
-        return df_nevo_langal[df_nevo_langal['FOODID'] == foodid_value]
-    elif origin_db == 'frida':
-        return df_frida_langal[df_frida_langal['FoodID'] == foodid_value]
-    else:
-        raise ValueError("Invalid origin_db value. Use 'nevo' or 'frida'.")
-
-
 def founderrors():
     global df_nevo_langal, df_frida_langal
     count = 0
@@ -209,7 +206,7 @@ def testAll_nevo_to_frida():
 
     print(df_nevo_langal)
     # Save the updated DataFrame to an xlsx file
-    df_nevo_langal.to_excel("results_testAll_nevo_to_frida.xlsx")
+    df_nevo_langal.to_excel("test_results/results_testAll_nevo_to_frida.xlsx")
 
 def testAll_frida_to_nevo():
     initialize_dataframes()
@@ -224,7 +221,7 @@ def testAll_frida_to_nevo():
 
     print(df_frida_langal)
     # Save the updated DataFrame to an xlsx file
-    df_frida_langal.to_excel("results_testAll_frida_to_nevo.xlsx")
+    df_frida_langal.to_excel("test_results/results_testAll_frida_to_nevo.xlsx")
 
 # %%
 # Run the initialization and similarity calculation
