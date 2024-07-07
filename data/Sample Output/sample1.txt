@@ -1,0 +1,33 @@
+PS C:\GitHub\LangualProject> python .\test.py
+Strawberry, raw
+{'B1393', 'A0707', 'A0671', 'G0003', 'H0003', 'A0833', 'M0001', 'J0003', 'A0143', 'N0001', 'C0167', 'E0150', 'Z0001', 'F0003', 'A0629', 'K0003', 'P0024', 'A0732', 'A0455'}
+     FOODID                         ORIGFDNM                         ENGFDNAM                                       LANGUALCODES REMARKS  SIMILARITYSCORE
+14      148                        Aardbeien                     Strawberries  {G0003, H0003, B1393, K0003, A0707, A0833, M00...                 0.631579
+326     159                 Cranberries vers                        Cranberry  {G0003, H0003, K0003, A0707, A0833, M0001, P00...                 0.578947
+114     151                           Banaan                           Banana  {G0003, C0138, H0003, K0003, A0707, A0833, M00...                 0.578947
+218     157                           Bramen                     Blackberries  {G0003, H0003, K0003, A0707, A0833, M0001, P00...                 0.578947
+2060   1010                      Vijgen vers                       Figs fresh  {G0003, H0003, K0003, A0707, A0833, B1302, M00...                 0.578947
+...     ...                              ...                              ...                                                ...     ...              ...
+947     185             Krenten gedroogd pak                   Currants dried  {G0003, A0834, C0139, K0003, A0707, J0141, M00...                 0.473684
+117    1114                 Banaan bak- rauw                Banana baking raw  {G0003, H0003, K0003, A0257, A0833, M0001, P00...                 0.473684
+1604   1400              Runderbiefstuk rauw              Beef rump steak raw  {A0794, G0003, Z0048, H0003, B1161, K0003, C02...                 0.473684
+1605   1401  Runderbiefstuk van de haas rauw        Beef tenderloin steak raw  {A0794, G0003, Z0048, H0003, B1161, K0003, C02...                 0.473684
+116     665   Banaan bak- plantain rijp rauw  Plantain baking banana ripe raw  {G0003, H0003, B1439, K0003, A0257, A0833, M00...                 0.473684
+
+[50 rows x 6 columns]
+                                    FødevareNavn                                  FoodName  FoodID                                      TaxonomicName  ...  FoodGroupID              FødevareGruppe                  FoodGroup SIMILARITYSCORE
+689  Kartoffel, efterår (oktober til januar), rå  Potato, automn (October to January), raw     938                 Solanum tuberosum (Linnaeus, 1753)  ...           39     Rod- og knoldgrøntsager  Root and tuber vegetables            1.00
+3                          Kartoffel, uspec., rå                               Potato, raw       4                 Solanum tuberosum (Linnaeus, 1753)  ...           39     Rod- og knoldgrøntsager  Root and tuber vegetables            1.00
+697       Kartoffel, gammel (februar - juni), rå       Potato, old (February to June), raw     946                 Solanum tuberosum (Linnaeus, 1753)  ...           39     Rod- og knoldgrøntsager  Root and tuber vegetables            1.00
+616        Kartoffel, ny (maj til september), rå       Potato, new (May to September), raw     846                 Solanum tuberosum (Linnaeus, 1753)  ...           39     Rod- og knoldgrøntsager  Root and tuber vegetables            1.00
+489                         Kartoffel, konserves                            Potato, canned     691                 Solanum tuberosum (Linnaeus, 1753)  ...           46          Grøntsagskonserves  Canned vegetable products            0.75
+..                                           ...                                       ...     ...                                                ...  ...          ...                         ...                        ...             ...
+431                    Brune linser, tørrede, rå                Lentils, brown, dried, raw     622                     Lens culinaris (Medikus, 1787)  ...          173         Tørrede bælgplanter               Dried pulses            0.25
+430                           Rødbede, konserves                         Beet, red, canned     621      Beta vulgaris var. Conditiva (Linnaeus, 1753)  ...           46          Grøntsagskonserves  Canned vegetable products            0.25
+704                           Grønkål, konserves                              Kale, canned     957   Brassica oleracea var. acephala (Linnaeus, 1753)  ...           40  Blad- og stængelgrøntsager   Leaf and stem vegetables            0.25
+288                           Cayote, Kayote, rå                        Chayote fruit, raw     428                      Sicyos edulis (Jacquin, 1760)  ...           41            Frugt-grøntsager          Fruit -Vegetables            0.25
+455                   Salat, Radicchio rosso, rå                  Chickory, raddichio, raw     652  Chichorium intybus var. foliosum (Linnaeus, 1753)  ...           40  Blad- og stængelgrøntsager   Leaf and stem vegetables            0.25
+
+[50 rows x 13 columns]
+  FOODID                                    ORIGFDNM                           ENGFDNAM                  LANGUALCODES REMARKS  SIMILARITYSCORE
+0    945  Aardappel driekantjes bereid in diamantvet  Potatoes triangulardeep fat fried  {A0829, A0706, A0152, B1218}                      0.0
