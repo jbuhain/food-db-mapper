@@ -142,7 +142,7 @@ def calculate_similarity(food_name, origin_db, target_db):
     
 
     # format highest similarity food names w/ double quotes
-    formatted_similarity_foodnames = {f'"{name}"' for name in highest_similarity_foodnames}
+    formatted_similarity_foodnames = {f'{name}' for name in highest_similarity_foodnames}
 
     # update  origin df w/ highest similarity food names
     if origin_db == 'nevo':
