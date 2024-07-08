@@ -186,7 +186,7 @@ def testAll_nevo_to_frida():
                 print(f"Error processing {food_name}: {str(e)}")
 
     print(df_nevo_langal)
-    df_nevo_langal.to_excel("test_results/results_testAll_nevo_to_frida.xlsx")
+    df_nevo_langal.to_excel("test_results/results_testAll_nevo_to_frida.xlsx", index=False)
 
 def testAll_frida_to_nevo():
     initialize_dataframes()
@@ -199,7 +199,7 @@ def testAll_frida_to_nevo():
                 print(f"Error processing {food_name}: {str(e)}")
 
     print(df_frida_langal)
-    df_frida_langal.to_excel("test_results/results_testAll_frida_to_nevo.xlsx")
+    df_frida_langal.to_excel("test_results/results_testAll_frida_to_nevo.xlsx", index=False)
 
 # %%
 # Run initialization and similarity calculation
