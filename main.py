@@ -140,18 +140,24 @@ def calculate_similarity(food_name, origin_db, target_db):
 
     max_score = temp_target_df['SIMILARITYSCORE'].max()
     
-
+    # print("max score", max_score)
     # format highest similarity food names w/ double quotes
     formatted_similarity_foodnames = {f'{name}' for name in highest_similarity_foodnames}
-
-    # update  origin df w/ highest similarity food names
+    print(formatted_similarity_foodnames)
+    # print("formatted_similarity_foodnames", formatted_similarity_foodnames)
+    # print(food_name)
+    # print([formatted_similarity_foodnames])
+    # print(df_frida_langal.loc[df_frida_langal['FoodName'] == food_name])
+    # update origin df w/ highest similarity food names
     if origin_db == 'nevo':
-        df_nevo_langal.loc[df_nevo_langal['ENGFDNAM'] == food_name, 'SIMILARFOODS'] = [formatted_similarity_foodnames]
+        for idx in df_nevo_langal.index[df_nevo_langal['ENGFDNAM'] == food_name]:
+            df_nevo_langal.at[idx, 'SIMILARFOODS'] = formatted_similarity_foodnames
     elif origin_db == 'frida':
-        df_frida_langal.loc[df_frida_langal['FoodName'] == food_name, 'SIMILARFOODS'] = [formatted_similarity_foodnames]
+        for idx in df_frida_langal.index[df_frida_langal['FoodName'] == food_name]:
+            df_frida_langal.at[idx, 'SIMILARFOODS'] = formatted_similarity_foodnames
 
     
-    # update  origin df w/ highest similarity food score
+    # update origin df w/ highest similarity food score
     if origin_db == 'nevo':
         df_nevo_langal.loc[df_nevo_langal['ENGFDNAM'] == food_name, 'SIMILARFOODSSCORE'] = max_score
         
@@ -204,14 +210,14 @@ def testAll_frida_to_nevo():
 # %%
 # Run initialization and similarity calculation
 if __name__ == "__main__":
-    testAll_nevo_to_frida()
+    # testAll_nevo_to_frida()
     testAll_frida_to_nevo()
     # initialize_dataframes()
     
     # # Example usage of calculate_similarity function
     
     # # frida to nevo
-    # result = calculate_similarity('Strawberry, raw', 'frida', 'nevo')
+    # result = calculate_similarity('Carrot, raw', 'frida', 'nevo')
     # print(result)
     # print(df_frida_langal)
     # # nevo to frida
