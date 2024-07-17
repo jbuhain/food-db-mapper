@@ -67,9 +67,9 @@ def process_batch(df_batch):
     df_text = df_to_text(df_batch)
     PROMPT = ("Given the following set, could you fill in FILTEREDSIMILARFOODS by choosing the top food names inside SIMILARFOODS that correspond best to FoodName? Make sure that it matches the exact food names and not just related food name. Also, you do not have to choose any from the filtered similar food if you believe that none of the filtered foods matches the food name best. Make the output the same format as my input.")
 
-    print("-------------------")
-    print("INPUT", df_text)
-    print("-------------------")
+    # print("-------------------")
+    # print("INPUT", df_text)
+    # print("-------------------")
 
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
@@ -77,35 +77,51 @@ def process_batch(df_batch):
             {"role": "system", "content": PROMPT},
             {"role": "user", "content": df_text},
         ],
-        max_tokens=4096
+        max_tokens=4096,
+        temperature=0.2
     )
 
     result = response.choices[0].message.content
-    print("-------------------")
-    print("RESULT", result)
-    print("-------------------")
-    print()
-    print("------new batch--------")
-    print("-------------------")
+    # print("-------------------")
+    # print("RESULT", result)
+    # print("-------------------")
+    # print()
+    # print("------new batch--------")
+    # print("-------------------")
     return parse_input_text(result)
 
 # Process the DataFrame in batches of 10 rows
 batch_size = 10
 # batches = [sample_df.iloc[i:i + batch_size] for i in range(0, len(sample_df), batch_size)]
 
-batches = [sample_df.iloc[i:i + batch_size] for i in range(1140, 1200, batch_size)]
+STARTING_INDEX = 1000
+FINAL_INDEX = len(sample_df)
+
+batches = [sample_df.iloc[i:i + batch_size] for i in range(STARTING_INDEX, FINAL_INDEX, batch_size)]
 filtered_batches = []
 
-for batch in batches:
+# Populate old values of filteredsimilarfoods
+results_df_old = pd.read_excel('test_results/process2/results_part2_testAll_frida_to_nevo.xlsx')
+sample_df['FILTEREDSIMILARFOODS'] = results_df_old['FILTEREDSIMILARFOODS']
+
+for i, batch in enumerate(batches):
     filtered_batch = process_batch(batch)
     filtered_batches.append(filtered_batch)
-    print("batch done: ",filtered_batch)
-
-# Concatenate all filtered batches into a single DataFrame
-filtered_df = pd.concat(filtered_batches).reset_index(drop=True)
-sample_df['FILTEREDSIMILARFOODS'] = filtered_df['FILTEREDSIMILARFOODS']
+    print("batch done: ", filtered_batch)
+    
+    
+     # Update the corresponding part of sample_df with filtered results
+    start_index = STARTING_INDEX + i * batch_size
+    end_index = start_index + len(filtered_batch)
+    
+    # Make sure the original DataFrame is updated correctly without overwriting previous rows
+    sample_df.loc[start_index:end_index-1, 'FILTEREDSIMILARFOODS'] = filtered_batch['FILTEREDSIMILARFOODS'].values
+    
+    # Save the intermediate DataFrame
+    sample_df.to_excel("test_results/process2/results_part2_testAll_frida_to_nevo.xlsx", index=False)
+    
+    print(f"Batch {i+1} saved successfully.")
 
 # Display the final DataFrame
 print(sample_df)
 
-sample_df.to_excel("test_results/process2/results_part2_testAll_frida_to_nevo.xlsx", index=False)
