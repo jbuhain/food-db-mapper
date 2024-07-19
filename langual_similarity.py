@@ -192,7 +192,7 @@ def testAll_nevo_to_frida():
                 print(f"Error processing {food_name}: {str(e)}")
 
     print(df_nevo_langal)
-    df_nevo_langal.to_excel("test_results/results_testAll_nevo_to_frida.xlsx", index=False)
+    df_nevo_langal.to_excel("test_results/LangualSimilarity/results_LangualSimilarity_nevo_to_frida.xlsx", index=False)
 
 def testAll_frida_to_nevo():
     initialize_dataframes()
@@ -205,15 +205,16 @@ def testAll_frida_to_nevo():
                 print(f"Error processing {food_name}: {str(e)}")
 
     print(df_frida_langal)
-    df_frida_langal.to_excel("test_results/results_testAll_frida_to_nevo.xlsx", index=False)
+    df_frida_langal.to_excel("test_results/LangualSimilarity/results_LangualSimilarity_frida_to_nevo.xlsx", index=False)
 
 # %%
 # Run initialization and similarity calculation
 if __name__ == "__main__":
-    # testAll_nevo_to_frida()
+    testAll_nevo_to_frida()
     testAll_frida_to_nevo()
+
     # initialize_dataframes()
-    
+    ##########################################################
     # # Example usage of calculate_similarity function
     
     # # frida to nevo
@@ -227,8 +228,9 @@ if __name__ == "__main__":
     # # # Example usage of get_row_by_engfdnam function
     # # row = get_row_by_engfdnam('Pineapple, canned', 'frida')
     # # print(row)
-
-
+    ##########################################################
     # # Example usage of get_row_by_foodid function
+
     # row2 = get_row_by_foodid('4', 'frida')
     # print(row2)
+
