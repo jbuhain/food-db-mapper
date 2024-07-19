@@ -1,6 +1,8 @@
 import pandas as pd
 import os
 import openpyxl
+import ast
+
 
 df_nevo_langal = pd.DataFrame()
 df_frida_langal = pd.DataFrame()
@@ -32,44 +34,51 @@ def convert_to_set(langual_codes, delimiter=' '):
     else:
         return set()  # or np.nan to output NaN instead of set()
 
+def convert_to_set_from_preprocessed(string):
+    try:
+        return ast.literal_eval(string)
+    except (ValueError, SyntaxError):
+        return set()
+
 def initialize_dataframes():
     global df_nevo_langal, df_frida_langal
+
+    file_path = 'data/processed/preprocess/NL_RIVM-NEVO_2008-05-22.xlsx'
+    df_nevo_langal = pd.read_excel(file_path)
     
-    # Text file path
-    text_file_path = 'data/NL RIVM-NEVO 2008-05-22.txt'
-    df_nevo_langal = read_text_file(text_file_path)
-    df_nevo_langal['LANGUALCODES'] = df_nevo_langal['LANGUALCODES'].apply(convert_to_set)
+    df_nevo_langal['LangualCodes'] = df_nevo_langal['LangualCodes'].apply(convert_to_set_from_preprocessed)
 
     # Excel file path
-    excel_file_path = 'data/Frida_5.1_November_2023.xlsx'
-    df_frida_langal = read_excel_file(excel_file_path, 'Food')
-    df_frida_langal['LangualCode'] = df_frida_langal['LangualCode'].apply(lambda x: convert_to_set(x, delimiter=','))
+    file_path = 'data/processed/preprocess/Frida_preprocess_5.1_November_2023.xlsx'
+    df_frida_langal = pd.read_excel(file_path)
+
+    df_frida_langal['LangualCodes'] = df_frida_langal['LangualCodes'].apply(convert_to_set_from_preprocessed)
+
+    df_frida_langal['SimilarFoods'] = ''
+    df_nevo_langal['SimilarFoods'] = ''
+
+
 
 def jaccard_similarity(set1, set2):
     intersection = set1.intersection(set2)
     union = set1.union(set2)
     return len(intersection) / len(set1)
 
-def langual_similarity(code1, code2):
-    set1 = set(code1.split())
-    set2 = set(code2.split())
-    return jaccard_similarity(set1, set2)
-
-def get_highest_similarity_foodnames(df, foodname_column='ENGFDNAM'):
-    max_score = df['SIMILARITYSCORE'].max()
-    highest_similarity_rows = df[df['SIMILARITYSCORE'] == max_score]
+def get_highest_similarity_foodnames(df, foodname_column='FoodName'):
+    max_score = df['SimilarityScore'].max()
+    highest_similarity_rows = df[df['SimilarityScore'] == max_score]
     return set(highest_similarity_rows[foodname_column])
 
-def get_highest_similarity_foodnames(df, foodname_column='ENGFDNAM'):
-    max_score = df['SIMILARITYSCORE'].max()
-    highest_similarity_rows = df[df['SIMILARITYSCORE'] == max_score]
+def get_highest_similarity_foodnames(df, foodname_column='FoodName'):
+    max_score = df['SimilarityScore'].max()
+    highest_similarity_rows = df[df['SimilarityScore'] == max_score]
     return set(highest_similarity_rows[foodname_column])
 
 def get_row_by_engfdnam(engfdnam_value, origin_db):
     global df_nevo_langal, df_frida_langal
     
     if origin_db == 'nevo':
-        return df_nevo_langal[df_nevo_langal['ENGFDNAM'] == engfdnam_value]
+        return df_nevo_langal[df_nevo_langal['FoodName'] == engfdnam_value]
     elif origin_db == 'frida':
         return df_frida_langal[df_frida_langal['FoodName'] == engfdnam_value]
     else:
@@ -86,7 +95,7 @@ def get_row_by_foodid(foodid_value, origin_db):
             return
     
     if origin_db == 'nevo':
-        return df_nevo_langal[df_nevo_langal['FOODID'] == foodid_value]
+        return df_nevo_langal[df_nevo_langal['FoodID'] == foodid_value]
     elif origin_db == 'frida':
         return df_frida_langal[df_frida_langal['FoodID'] == foodid_value]
     else:
@@ -100,18 +109,18 @@ def calculate_similarity(food_name, origin_db, target_db):
     # determine origin DataFrame and select row based on food_name
     if origin_db == 'nevo':
         origin_df = df_nevo_langal
-        origin_row = origin_df[origin_df['ENGFDNAM'] == food_name]
+        origin_row = origin_df[origin_df['FoodName'] == food_name]
         if origin_row.empty:
             raise ValueError(f"No match found in {origin_db} database for food name: {food_name}")
 
-        origin_set = origin_row['LANGUALCODES'].values[0]
+        origin_set = origin_row['LangualCodes'].values[0]
     elif origin_db == 'frida':
         origin_df = df_frida_langal
         origin_row = origin_df[origin_df['FoodName'] == food_name]
         if origin_row.empty:
             raise ValueError(f"No match found in {origin_db} database for food name: {food_name}")
 
-        origin_set = origin_row['LangualCode'].values[0]
+        origin_set = origin_row['LangualCodes'].values[0]
     else:
         raise ValueError("Invalid origin_db value. Use 'nevo' or 'frida'.")
     
@@ -124,45 +133,48 @@ def calculate_similarity(food_name, origin_db, target_db):
         raise ValueError("Invalid target_db value. Use 'nevo' or 'frida'.")
     
     # calc similarity scores
+    # Note: Similarity Scores will be deleted at the end
+    
     if target_db == 'nevo':
-        target_df['SIMILARITYSCORE'] = target_df['LANGUALCODES'].apply(lambda x: jaccard_similarity(origin_set, x))
+        target_df['SimilarityScore'] = target_df['LangualCodes'].apply(lambda x: jaccard_similarity(origin_set, x))
     elif target_db == 'frida':
-        target_df['SIMILARITYSCORE'] = target_df['LangualCode'].apply(lambda x: jaccard_similarity(origin_set, x))
+        target_df['SimilarityScore'] = target_df['LangualCodes'].apply(lambda x: jaccard_similarity(origin_set, x))
 
-    # sort df based on SIMILARITYSCORE column from greatest to least
-    temp_target_df = target_df.sort_values(by='SIMILARITYSCORE', ascending=False)
+    # sort df based on SimilarityScore column from greatest to least
+    temp_target_df = target_df.sort_values(by='SimilarityScore', ascending=False)
 
     # get food names w/ highest similarity score
     if target_db == 'nevo':
-        highest_similarity_foodnames = get_highest_similarity_foodnames(temp_target_df, 'ENGFDNAM')
+        highest_similarity_foodnames = get_highest_similarity_foodnames(temp_target_df, 'FoodName')
     elif target_db == 'frida':
         highest_similarity_foodnames = get_highest_similarity_foodnames(temp_target_df, 'FoodName')
 
-    max_score = temp_target_df['SIMILARITYSCORE'].max()
+    max_score = temp_target_df['SimilarityScore'].max()
     
     # print("max score", max_score)
     # format highest similarity food names w/ double quotes
     formatted_similarity_foodnames = {f'{name}' for name in highest_similarity_foodnames}
-    print(formatted_similarity_foodnames)
+    # print(formatted_similarity_foodnames)
     # print("formatted_similarity_foodnames", formatted_similarity_foodnames)
     # print(food_name)
     # print([formatted_similarity_foodnames])
     # print(df_frida_langal.loc[df_frida_langal['FoodName'] == food_name])
     # update origin df w/ highest similarity food names
+
     if origin_db == 'nevo':
-        for idx in df_nevo_langal.index[df_nevo_langal['ENGFDNAM'] == food_name]:
-            df_nevo_langal.at[idx, 'SIMILARFOODS'] = formatted_similarity_foodnames
+        for idx in df_nevo_langal.index[df_nevo_langal['FoodName'] == food_name]:
+            df_nevo_langal.at[idx, 'SimilarFoods'] = formatted_similarity_foodnames
     elif origin_db == 'frida':
         for idx in df_frida_langal.index[df_frida_langal['FoodName'] == food_name]:
-            df_frida_langal.at[idx, 'SIMILARFOODS'] = formatted_similarity_foodnames
+            df_frida_langal.at[idx, 'SimilarFoods'] = formatted_similarity_foodnames
 
     
     # update origin df w/ highest similarity food score
     if origin_db == 'nevo':
-        df_nevo_langal.loc[df_nevo_langal['ENGFDNAM'] == food_name, 'SIMILARFOODSSCORE'] = max_score
+        df_nevo_langal.loc[df_nevo_langal['FoodName'] == food_name, 'SimilarityScore'] = max_score
         
     elif origin_db == 'frida':
-        df_frida_langal.loc[df_frida_langal['FoodName'] == food_name, 'SIMILARFOODSSCORE'] = max_score
+        df_frida_langal.loc[df_frida_langal['FoodName'] == food_name, 'SimilarityScore'] = max_score
     
     # free up memory to make it faster? idk if this will help that much
     del temp_target_df
@@ -174,9 +186,9 @@ def founderrors():
     initialize_dataframes()
 
     for index, row in df_nevo_langal.iterrows():
-        if not row['ENGFDNAM']:
+        if not row['FoodName']:
             count += 1
-            print("Found an empty 'ENGFDNAM' at index:", index)
+            print("Found an empty 'FoodName' at index:", index)
             print("Row details:", row)
 
     print("errors:",count)
@@ -184,8 +196,8 @@ def founderrors():
 def testAll_nevo_to_frida():
     initialize_dataframes()
     for index, row in df_nevo_langal.iterrows():
-        if row['ENGFDNAM']:
-            food_name = row['ENGFDNAM']
+        if row['FoodName']:
+            food_name = row['FoodName']
             try:
                 calculate_similarity(food_name, 'nevo', 'frida')
             except Exception as e:
@@ -214,6 +226,7 @@ if __name__ == "__main__":
     testAll_frida_to_nevo()
 
     # initialize_dataframes()
+
     ##########################################################
     # # Example usage of calculate_similarity function
     
@@ -221,13 +234,16 @@ if __name__ == "__main__":
     # result = calculate_similarity('Carrot, raw', 'frida', 'nevo')
     # print(result)
     # print(df_frida_langal)
+
     # # nevo to frida
     # result = calculate_similarity('Potatoes triangulardeep fat fried', 'nevo', 'frida')
     # print(result)
     # print(df_nevo_langal)
+
     # # # Example usage of get_row_by_engfdnam function
     # # row = get_row_by_engfdnam('Pineapple, canned', 'frida')
     # # print(row)
+    
     ##########################################################
     # # Example usage of get_row_by_foodid function
 
