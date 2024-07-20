@@ -23,11 +23,6 @@ def read_text_file(file_path):
     df = pd.DataFrame(data, columns=headers)
     return df
 
-def read_excel_file(excel_path, sheet_name):
-    xls = pd.ExcelFile(excel_path)
-    df = pd.read_excel(xls, sheet_name)
-    return df
-
 def convert_to_set(langual_codes, delimiter=' '):
     if isinstance(langual_codes, str):
         return set(langual_codes.split(delimiter))
@@ -54,10 +49,9 @@ def initialize_dataframes():
 
     df_frida_langal['LangualCodes'] = df_frida_langal['LangualCodes'].apply(convert_to_set_from_preprocessed)
 
+    # Populate new rows
     df_frida_langal['SimilarFoods'] = ''
     df_nevo_langal['SimilarFoods'] = ''
-
-
 
 def jaccard_similarity(set1, set2):
     intersection = set1.intersection(set2)
