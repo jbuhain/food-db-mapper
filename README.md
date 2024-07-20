@@ -1,5 +1,5 @@
 # LangualProject
-Goal: To connect food databases around the world. Currently experimenting with different ways (LanguaL classification and other food data)
+Goal: To connect food databases around the world. Currently experimenting with different ways (LanguaL, machine learning, LLMs, imagination, wifi, duct tape, elbow grease, etc)
 # Updates
   - 7/7/24: added early tests for jaccard_index method, cleaned up repository
   - 7/12/24: Refined/completed LanguaL similarity for Nevo to Frida, Frida to Nevo.
