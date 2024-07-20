@@ -1,10 +1,12 @@
 # LangualProject
-Goal: To connect food databases using LanguaL.
+Goal: To connect food databases around the world. Currently experimenting with different ways (LanguaL classification and other food data)
 # Updates
   - 7/7/24: added early tests for jaccard_index method, cleaned up repository
-# Todo
-  - Refactor main.py to have uniform column values
-    - Process the raw data to make it easier to use, remove null values etc
+  - 7/12/24: Refined/completed LanguaL similarity for Nevo to Frida, Frida to Nevo.
+  - 7/15/24: Added GPT3.5 turbo filtering w/ LanguaL similarity. Prompt Engineering, data preprocessing, cleaned up code. 
+  - 7/19/24: Added Faiss + Embedded method. Add links here for more context
+  - Current: 
+
 ## Notes
 Not all of the rows have a 1 to 1 specific entry
 Not all of the rows have a defined langual code (that's where LLMs becomes handy)
