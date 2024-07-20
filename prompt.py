@@ -5,11 +5,6 @@ from openai import OpenAI
 client = OpenAI()
 client.api_key = os.getenv('OPENAI_API_KEY')
 
-# Load results w/ SIMILARFOODS processed by jaccard similarity
-df_new = pd.read_excel('test_results/results_testAll_frida_to_nevo.xlsx')
-sample_df = df_new[['FoodName', 'SIMILARFOODS']]
-sample_df["FILTEREDSIMILARFOODS"] = '{}'
-
 # Function to convert DataFrame to text
 def df_to_text(df):
     rows = []
@@ -61,7 +56,7 @@ def parse_input_text(input_text):
 
     return pd.DataFrame(data)
 
-def process_batch(df_batch):
+def process_batch_OLD(df_batch):
     df_text = df_to_text(df_batch)
     PROMPT = ("Given the following set, could you fill in FILTEREDSIMILARFOODS by choosing the top food names inside SIMILARFOODS that correspond best to FoodName? Make sure that it matches the exact food names and not just related food name. Also, you do not have to choose any from the filtered similar food if you believe that none of the filtered foods matches the food name best. Make the output the same format as my input.")
     # print("-------------------")
@@ -86,36 +81,87 @@ def process_batch(df_batch):
     # print("-------------------")
     return parse_input_text(result)
 
-# Process the DataFrame in batches of n rows
-# Adjust Starting and Final indexes for testing subset of data
-BATCH_SIZE = 10
-STARTING_INDEX = 775
-# FINAL_INDEX = len(sample_df)
-FINAL_INDEX = 885
 
-batches = [sample_df.iloc[i:i + BATCH_SIZE] for i in range(STARTING_INDEX, FINAL_INDEX, BATCH_SIZE)]
-filtered_batches = []
+def testAll_frida_to_nevo():
+    # Process the DataFrame in batches of n rows
+    # Adjust Starting and Final indexes for testing subset of data
+    BATCH_SIZE = 10
+    STARTING_INDEX = 775
+    # FINAL_INDEX = len(sample_df)
+    FINAL_INDEX = 885
 
-# Populate old values of filteredsimilarfoods
-results_df_old = pd.read_excel('test_results/GPT3.5_filtered_July17/results_part2_testAll_frida_to_nevo.xlsx')
-sample_df['FILTEREDSIMILARFOODS'] = results_df_old['FILTEREDSIMILARFOODS']
+    # Load results w/ SIMILARFOODS processed by langual similarity
+    df_new = pd.read_excel('test_results/results_testAll_frida_to_nevo.xlsx')
+    sample_df = df_new[['FoodName', 'SIMILARFOODS']]
+    sample_df["FILTEREDSIMILARFOODS"] = '{}'
 
-for i, batch in enumerate(batches):
-    filtered_batch = process_batch(batch)
-    filtered_batches.append(filtered_batch)
+    batches = [sample_df.iloc[i:i + BATCH_SIZE] for i in range(STARTING_INDEX, FINAL_INDEX, BATCH_SIZE)]
+    filtered_batches = []
 
-    batch_index_start = STARTING_INDEX + (i * BATCH_SIZE)
-    batch_index_end = batch_index_start + len(filtered_batch)
-    print(f"batch {i} done. Index: {batch_index_start}-{batch_index_end}")
-    
-    # -1 since loc is inclusive.
-    sample_df.loc[batch_index_start:batch_index_end-1, 'FILTEREDSIMILARFOODS'] = filtered_batch['FILTEREDSIMILARFOODS'].values
-    
-    # Save to excel
-    sample_df.to_excel("test_results/GPT3.5_filtered_July17/results_part2_testAll_frida_to_nevo.xlsx", index=False)
-    
-    print(f"Batch {i} saved successfully.")
+    # Populate old values of filteredsimilarfoods
+    results_df_old = pd.read_excel('test_results/GPT3.5_filtered_July17/results_part2_testAll_frida_to_nevo.xlsx')
+    sample_df['FILTEREDSIMILARFOODS'] = results_df_old['FILTEREDSIMILARFOODS']
 
-# Display the final DataFrame
-print(sample_df)
+    for i, batch in enumerate(batches):
+        filtered_batch = process_batch_OLD(batch)
+        filtered_batches.append(filtered_batch)
+
+        batch_index_start = STARTING_INDEX + (i * BATCH_SIZE)
+        batch_index_end = batch_index_start + len(filtered_batch)
+        print(f"batch {i} done. Index: {batch_index_start}-{batch_index_end}")
+        
+        # -1 since loc is inclusive.
+        sample_df.loc[batch_index_start:batch_index_end-1, 'FILTEREDSIMILARFOODS'] = filtered_batch['FILTEREDSIMILARFOODS'].values
+        
+        # Save to excel
+        sample_df.to_excel("test_results/GPT3.5_filtered_July17/results_part2_testAll_frida_to_nevo.xlsx", index=False)
+        
+        print(f"Batch {i} saved successfully.")
+
+    # Display the final DataFrame
+    print(sample_df)
+
+
+def testAll_nevo_to_frida():
+    # Process the DataFrame in batches of n rows
+    # Adjust Starting and Final indexes for testing subset of data
+    BATCH_SIZE = 10
+    STARTING_INDEX = 0
+    # FINAL_INDEX = len(sample_df)
+    FINAL_INDEX = 100
+
+    # Load results w/ SIMILARFOODS processed by langual similarity
+    df_new = pd.read_excel('test_results/LangualSimilarity/results_LangualSimilarity_nevo_to_frida.xlsx')
+    sample_df = df_new[['FoodName', 'SIMILARFOODS']]
+    sample_df["FILTEREDSIMILARFOODS"] = '{}'
+
+    batches = [sample_df.iloc[i:i + BATCH_SIZE] for i in range(STARTING_INDEX, FINAL_INDEX, BATCH_SIZE)]
+    filtered_batches = []
+
+    # Populate original values of filteredsimilarfoods
+    results_df_old = pd.read_excel('test_results/GPT3.5_filtered_July17/results_GPT3.5Turbo_nevo_to_frida.xlsx')
+    sample_df['FILTEREDSIMILARFOODS'] = results_df_old['FILTEREDSIMILARFOODS']
+
+    for i, batch in enumerate(batches):
+        filtered_batch = process_batch_OLD(batch)
+        filtered_batches.append(filtered_batch)
+
+        batch_index_start = STARTING_INDEX + (i * BATCH_SIZE)
+        batch_index_end = batch_index_start + len(filtered_batch)
+        print(f"batch {i} done. Index: {batch_index_start}-{batch_index_end}")
+        
+        # -1 since loc is inclusive.
+        sample_df.loc[batch_index_start:batch_index_end-1, 'FILTEREDSIMILARFOODS'] = filtered_batch['FILTEREDSIMILARFOODS'].values
+        
+        # Save to excel
+        sample_df.to_excel("test_results/GPT3.5_filtered_July17/results_part2_testAll_frida_to_nevo.xlsx", index=False)
+        
+        print(f"Batch {i} saved successfully.")
+
+    # Display the final DataFrame
+    print(sample_df)
+
+if __name__ == "__main__":
+    # testAll_frida_to_nevo()
+
 
