@@ -1,11 +1,13 @@
-# LangualProject
-Goal: To connect food databases around the world. Currently experimenting with different ways (LanguaL, machine learning, LLMs, imagination, wifi, duct-tape, elbow grease, Red Bull sponsorship, etc)
+# Food-DB-Mapper
+Goal: This project is a proof of concept for a food database matcher that maps food from one database to another. 
+Currently experimenting with LLMs, similarity search algos, and other things. 
+
 # Updates
-  - 7/7/24: added early tests for jaccard_index method, cleaned up repository
-  - 7/12/24: Refined/completed LanguaL similarity for Nevo to Frida, Frida to Nevo.
+  - 8/01/24: Added results with NEVO-FRIDA db matching with GPT-4o mini  
+  - 7/19/24: Added Faiss + Embedded method. 
   - 7/15/24: Added GPT3.5 turbo filtering w/ LanguaL similarity. Prompt Engineering, data preprocessing, cleaned up code. 
-  - 7/19/24: Added Faiss + Embedded method. Add links here for more context
-  - Current: 
+  - 7/12/24: Refined/completed LanguaL similarity for Nevo to Frida, Frida to Nevo.
+  - 7/7/24: added early tests for jaccard_index method, cleaned up repository
 
 ## Notes
 Not all of the rows have a 1 to 1 specific entry
