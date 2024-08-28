@@ -20,7 +20,7 @@ Create methods that allows you to search based on the searchable foods from the 
 How do I test the performance of my program? 3 Categories
   - Test 1: 100 fixed food rows. 
   - Test 2: 20 random food rows(done 20 times). 
-  ~~- Test 3: [Edge-case testing] pick 30 foods with no langual codes ~~~
+  ~~- Test 3: [Edge-case testing] pick 30 foods with no langual codes~~
 
 USDA data is not being used currently, ignore for now. 
 
