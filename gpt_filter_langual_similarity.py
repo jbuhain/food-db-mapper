@@ -56,7 +56,7 @@ def parse_input_text(input_text):
 
     return pd.DataFrame(data)
 
-def process_batch_OLD(df_batch):
+def process_batch(df_batch):
     df_text = df_to_text(df_batch)
     PROMPT = ("Given the following set, could you fill in FILTEREDSIMILARFOODS by choosing the top food names inside SIMILARFOODS that correspond best to FoodName? Make sure that it matches the exact food names and not just related food name. Also, you do not have to choose any from the filtered similar food if you believe that none of the filtered foods matches the food name best. Make the output the same format as my input.")
     # print("-------------------")
